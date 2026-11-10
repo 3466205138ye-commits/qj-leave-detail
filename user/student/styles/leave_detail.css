@@ -1,0 +1,599 @@
+/* 扁平化设计规范 - 请假详情页面样式 */
+@import "../../../components/variables.css";
+
+:root {
+	/* 页面特定变量 - 扩展全局变量 */
+	--text-primary: var(--menu-text, #111827);
+	--text-secondary: var(--menu-text-secondary, #374151);
+	--text-muted: var(--info, #6b7280);
+
+	/* 审批状态颜色 */
+	--status-approved: var(--success, #10b981);
+	--status-approved-bg: var(--success-light, #ecfdf5);
+	--status-approved-text: #059669;
+	--status-rejected: var(--danger, #ef4444);
+	--status-rejected-bg: var(--danger-light, #fef2f2);
+	--status-rejected-text: #dc2626;
+	/* 待审批使用蓝色主题（与原设计一致） */
+	--status-pending: var(--primary-light, #3b82f6);
+	--status-pending-bg: #eff6ff;
+	--status-pending-text: #1d4ed8;
+}
+
+/* ========== 基础样式 ========== */
+body {
+	min-height: 100vh;
+	color: var(--text-primary);
+	background-color: var(--bg-secondary);
+	-webkit-font-smoothing: antialiased;
+	margin: 0;
+	padding: 0;
+}
+
+/* Alpine.js cloak */
+[x-cloak] {
+	display: none !important;
+}
+
+/* ========== 主容器 ========== */
+.detail-container {
+	max-width: 900px;
+	margin: 120px auto 48px;
+	padding: 32px;
+}
+
+.detail-container h1 {
+	margin: 0 0 32px 0;
+	font-size: 24px;
+	font-weight: 700;
+	color: var(--text-primary);
+	text-align: center;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+}
+
+.detail-container h1 i {
+	font-size: 28px;
+	color: var(--primary);
+}
+
+/* ========== 卡片容器通用样式 ========== */
+.basic-info,
+.timeline-container,
+.images-container {
+	background-color: var(--bg-primary);
+	border: 2px solid var(--border-light);
+	border-radius: var(--radius-md);
+	padding: var(--spacing-lg);
+	margin-bottom: var(--spacing-lg);
+}
+
+.basic-info:last-child,
+.timeline-container:last-child,
+.images-container:last-child {
+	margin-bottom: 0;
+}
+
+/* ========== 章节标题 ========== */
+.basic-info h3,
+.timeline-container h3,
+.images-container h3 {
+	margin: 0 0 24px 0;
+	font-size: 18px;
+	font-weight: 700;
+	color: var(--text-primary);
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding-bottom: var(--spacing-md);
+	border-bottom: 2px solid var(--border-light);
+}
+
+.basic-info h3 i,
+.timeline-container h3 i,
+.images-container h3 i {
+	font-size: 20px;
+	color: var(--primary);
+}
+
+/* ========== 基本信息网格 ========== */
+.info-grid {
+	display: grid;
+	grid-template-columns: 140px 1fr;
+	gap: 16px;
+	row-gap: 20px;
+}
+
+.info-label {
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--text-secondary);
+	display: flex;
+	align-items: flex-start;
+	padding-top: 2px;
+}
+
+.info-label::after {
+	content: "：";
+	margin-left: 2px;
+}
+
+.info-value {
+	font-size: 14px;
+	color: var(--text-primary);
+	line-height: 1.6;
+	word-break: break-word;
+}
+
+/* ========== 审批流程时间轴 ========== */
+
+/* 状态卡片 */
+.approval-status-card {
+	padding: 20px;
+	border-radius: var(--radius-md);
+	margin-bottom: 20px;
+}
+
+.approval-status-card.pending {
+	background-color: var(--status-pending-bg);
+	border: 2px solid var(--status-pending);
+}
+
+.approval-status-card.approved {
+	background-color: var(--status-approved-bg);
+	border: 2px solid var(--status-approved);
+}
+
+.approval-status-card.rejected {
+	background-color: var(--status-rejected-bg);
+	border: 2px solid var(--status-rejected);
+}
+
+.approval-status-card .status-title {
+	font-size: 20px;
+	font-weight: 700;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 8px;
+}
+
+.approval-status-card.pending .status-title {
+	color: var(--status-pending-text);
+}
+
+.approval-status-card.approved .status-title {
+	color: var(--status-approved-text);
+}
+
+.approval-status-card.rejected .status-title {
+	color: var(--status-rejected-text);
+}
+
+.approval-status-card .status-title i {
+	font-size: 24px;
+}
+
+.approval-status-card .status-progress {
+	font-size: 14px;
+	color: var(--text-muted);
+	margin-bottom: 4px;
+}
+
+.approval-status-card .status-detail {
+	font-size: 14px;
+	color: var(--text-secondary);
+}
+
+/* 折叠按钮 */
+.timeline-fold-toggle {
+	display: flex;
+	align-items: center;
+	padding: 12px 16px 12px 40px;
+	color: var(--text-muted);
+	cursor: pointer;
+	font-size: 14px;
+	transition: color 0.2s;
+}
+
+.timeline-fold-toggle:hover {
+	color: var(--text-secondary);
+}
+
+.timeline-fold-toggle i {
+	font-size: 18px;
+	margin-right: 6px;
+	transition: transform 0.2s;
+}
+
+/* 折叠区域 */
+.timeline-optional-section {
+	animation: fadeIn 0.2s ease-in-out;
+}
+
+/* 任一审批组详情容器 */
+.timeline-group-detail {
+	margin: 12px 0 0 0;
+	padding: 12px;
+	background-color: var(--bg-secondary);
+	border-radius: var(--radius-sm);
+	border: 1px solid var(--border-light);
+}
+
+/* 组内节点样式 */
+.timeline-group-item {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 10px 12px;
+	margin-bottom: 8px;
+	background-color: var(--bg-primary);
+	border-radius: var(--radius-sm);
+	border: 1px solid var(--border-light);
+}
+
+.timeline-group-item:last-child {
+	margin-bottom: 0;
+}
+
+.timeline-group-role {
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--text-primary);
+}
+
+.timeline-group-status {
+	font-size: 13px;
+	font-weight: 600;
+	display: flex;
+	align-items: center;
+	gap: 4px;
+}
+
+.timeline-group-status.approved {
+	color: var(--status-approved);
+}
+
+.timeline-group-status.rejected {
+	color: var(--status-rejected);
+}
+
+.timeline-group-status.pending {
+	color: var(--status-pending);
+}
+
+.timeline-group-status.no-need {
+	color: var(--text-muted);
+}
+
+.timeline-group-status i {
+	font-size: 14px;
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+.timeline {
+	position: relative;
+	padding: 8px 0;
+}
+
+/* 时间轴中心线 */
+.timeline::before {
+	content: "";
+	position: absolute;
+	left: 8px;
+	top: 0;
+	bottom: 0;
+	width: 2px;
+	background-color: var(--border-light);
+}
+
+.timeline-item {
+	position: relative;
+	padding: 16px 0 16px 40px;
+	min-height: 80px;
+}
+
+/* 时间轴节点圆点 */
+.timeline-item::before {
+	content: "";
+	position: absolute;
+	left: 0;
+	top: 20px;
+	width: 18px;
+	height: 18px;
+	border-radius: 50%;
+	border: 4px solid var(--bg-primary);
+	box-sizing: border-box;
+}
+
+/* 节点连接线 */
+.timeline-item::after {
+	content: "";
+	position: absolute;
+	left: 8px;
+	top: 38px;
+	width: 2px;
+	height: calc(100% - 38px);
+	background-color: var(--border-light);
+}
+
+/* 最后一项不显示连接线 */
+.timeline-item:last-child::after {
+	display: none;
+}
+
+/* 状态颜色 - 已批准 */
+.timeline-item.approved::before {
+	background-color: var(--status-approved);
+	border-color: var(--status-approved);
+}
+
+/* 状态颜色 - 已拒绝 */
+.timeline-item.rejected::before {
+	background-color: var(--status-rejected);
+	border-color: var(--status-rejected);
+}
+
+/* 状态颜色 - 待审批 */
+.timeline-item.pending::before {
+	background-color: var(--status-pending);
+	border-color: var(--status-pending);
+}
+
+/* 状态颜色 - 无需审批 */
+.timeline-item.no-need::before {
+	background-color: var(--border-medium);
+	border-color: var(--border-medium);
+}
+
+.timeline-role {
+	font-size: 16px;
+	font-weight: 700;
+	color: var(--text-primary);
+	margin: 0 0 8px 0;
+}
+
+.timeline-status {
+	font-size: 14px;
+	font-weight: 600;
+	margin: 0 0 8px 0;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.timeline-status.approved {
+	color: var(--status-approved);
+}
+
+.timeline-status.rejected {
+	color: var(--status-rejected);
+}
+
+.timeline-status.pending {
+	color: var(--status-pending);
+}
+
+.timeline-status.no-need {
+	color: var(--text-muted);
+}
+
+.timeline-status i {
+	font-size: 16px;
+}
+
+.timeline-description {
+	font-size: 12px;
+	color: var(--text-muted);
+	line-height: 1.6;
+	margin: 0;
+}
+
+/* ========== 图片网格 ========== */
+.images-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+	gap: var(--spacing-md);
+}
+
+.image-item {
+	position: relative;
+	border-radius: var(--radius-sm);
+	overflow: hidden;
+	border: 2px solid var(--border-light);
+	background-color: var(--bg-secondary);
+	cursor: pointer;
+}
+
+.image-item:hover {
+	border-color: var(--primary);
+}
+
+.image-item img {
+	width: 100%;
+	height: 180px;
+	object-fit: cover;
+	display: block;
+}
+
+.no-images {
+	text-align: center;
+	padding: 48px 0;
+	color: var(--text-muted);
+	font-size: 14px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 8px;
+}
+
+.no-images i {
+	font-size: 48px;
+	color: var(--border-medium);
+}
+
+/* ========== 响应式设计 ========== */
+@media (max-width: 768px) {
+	.detail-container {
+		margin: 20px 16px 32px;
+		padding: 0;
+	}
+
+	.detail-container h1 {
+		font-size: 20px;
+		margin-bottom: 24px;
+	}
+
+	.detail-container h1 i {
+		font-size: 24px;
+	}
+
+	.basic-info,
+	.timeline-container,
+	.images-container {
+		padding: 16px;
+		margin-bottom: 16px;
+	}
+
+	.basic-info h3,
+	.timeline-container h3,
+	.images-container h3 {
+		font-size: 16px;
+		margin-bottom: 16px;
+		padding-bottom: 12px;
+	}
+
+	.basic-info h3 i,
+	.timeline-container h3 i,
+	.images-container h3 i {
+		font-size: 18px;
+	}
+
+	.info-grid {
+		grid-template-columns: 100px 1fr;
+		gap: 12px;
+		row-gap: 16px;
+	}
+
+	.info-label {
+		font-size: 13px;
+	}
+
+	.info-value {
+		font-size: 13px;
+	}
+
+	.timeline {
+		padding: 8px 0;
+	}
+
+	.timeline::before {
+		left: 6px;
+	}
+
+	.timeline-item {
+		padding: 12px 0 12px 32px;
+		min-height: 68px;
+	}
+
+	.timeline-item::before {
+		left: 0;
+		top: 16px;
+		width: 14px;
+		height: 14px;
+		border-width: 3px;
+	}
+
+	.timeline-item::after {
+		left: 6px;
+		top: 30px;
+		height: calc(100% - 30px);
+	}
+
+	.timeline-role {
+		font-size: 15px;
+	}
+
+	.timeline-status {
+		font-size: 13px;
+	}
+
+	.timeline-description {
+		font-size: 12px;
+	}
+
+	.images-grid {
+		grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+		gap: 12px;
+	}
+
+	.image-item img {
+		height: 120px;
+	}
+
+	.no-images {
+		padding: 32px 0;
+		font-size: 13px;
+	}
+
+	.no-images i {
+		font-size: 40px;
+	}
+
+	/* 状态卡片移动端样式 */
+	.approval-status-card {
+		padding: 16px;
+		margin-bottom: 16px;
+	}
+
+	.approval-status-card .status-title {
+		font-size: 18px;
+	}
+
+	.approval-status-card .status-title i {
+		font-size: 20px;
+	}
+
+	.approval-status-card .status-progress,
+	.approval-status-card .status-detail {
+		font-size: 13px;
+	}
+
+	/* 折叠按钮移动端样式 */
+	.timeline-fold-toggle {
+		padding: 10px 12px 10px 32px;
+		font-size: 13px;
+	}
+
+	/* 任一审批组详情移动端样式 */
+	.timeline-group-item {
+		padding: 8px 10px;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 4px;
+	}
+
+	.timeline-group-role {
+		font-size: 13px;
+	}
+
+	.timeline-group-status {
+		font-size: 12px;
+	}
+
+	/* 任一审批组详情移动端样式 */
+	.timeline-group-detail {
+		padding: 10px;
+		margin-top: 10px;
+	}
+}

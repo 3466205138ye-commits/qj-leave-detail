@@ -1,0 +1,95 @@
+/* ============================================================
+   微信内置浏览器 / 手机端适配补丁（wechat-mobile.css）
+   ------------------------------------------------------------
+   原则：桌面端与 Android 端保持与原站像素级一致，
+   只有"真机上会出问题"的地方才动手。
+
+     1. iOS / WKWebView（含微信 iOS）：输入框字号 < 16px 时，
+        聚焦会强制放大整个页面 —— 这是唯一影响布局的改动，
+        且只在 iOS 生效（@supports -webkit-touch-callout）。
+     2. 微信「我 - 设置 - 通用 - 字体大小」会放大网页字号，
+        用 text-size-adjust 固定。
+     3. iPhone 刘海屏 / 底部手势条的安全区。
+     4. 微信内点击出现灰色高亮、长按弹出系统菜单。
+   ============================================================ */
+
+html {
+	-webkit-text-size-adjust: 100%;
+	-moz-text-size-adjust: 100%;
+	text-size-adjust: 100%;
+	/* 微信下拉回弹时露出的底色，与原站 body 背景一致 */
+	background-color: var(--bg-secondary, #f9fafb);
+}
+
+body {
+	-webkit-tap-highlight-color: transparent;
+	-webkit-touch-callout: none;
+	overscroll-behavior-y: contain;
+}
+
+.fbtn,
+button {
+	touch-action: manipulation;
+}
+
+@media (max-width: 768px) {
+	/* 触摸热区：原样式高度已接近 44px，这里只做兜底，正常不改变视觉 */
+	input[type="text"],
+	input[type="date"],
+	input[type="tel"],
+	input[type="number"],
+	input[type="search"],
+	textarea,
+	select {
+		min-height: 44px;
+	}
+
+	/* 底部安全区（手势条）；constant() 兼容 iOS 11 早期版本 */
+	body {
+		padding-bottom: constant(safe-area-inset-bottom);
+		padding-bottom: env(safe-area-inset-bottom, 0px);
+	}
+
+	/* 详情页吸顶栏：横屏刘海避免压住 logo 和按钮 */
+	.top-bar-main {
+		padding-left: max(12px, env(safe-area-inset-left, 0px)) !important;
+		padding-right: max(12px, env(safe-area-inset-right, 0px)) !important;
+	}
+}
+
+/* ------------------------------------------------------------------
+   仅 iOS（Safari / WKWebView / 微信 iOS）：防止输入框聚焦自动放大
+   判定条件 -webkit-touch-callout 只在 WebKit for iOS 上为真，
+   Android 微信（X5）与桌面浏览器不会命中，因此不影响原版观感。
+   ------------------------------------------------------------------ */
+@supports (-webkit-touch-callout: none) {
+	@media (max-width: 768px) {
+		input[type="text"],
+		input[type="date"],
+		input[type="tel"],
+		input[type="number"],
+		input[type="search"],
+		input[type="password"],
+		textarea,
+		select {
+			font-size: 16px;
+		}
+
+		/* iOS 的 date 控件默认居中显示 */
+		input[type="date"] {
+			text-align: left;
+		}
+	}
+}
+
+/* 极窄屏（<= 360px，如 iPhone SE 第一代）收一下配置页留白 */
+@media (max-width: 360px) {
+	.page {
+		margin: 16px auto;
+		padding: 16px;
+	}
+
+	.card {
+		padding: 16px;
+	}
+}

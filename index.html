@@ -17,6 +17,19 @@
     .field input { width:100%; box-sizing:border-box; border:2px solid var(--border-light,#e5e7eb); border-radius:8px; padding:12px 14px; font-size:14px; background:#fff; }
     .actions { display:flex; gap:12px; flex-wrap:wrap; margin-top:24px; }
     .tips { margin-top:14px; color:#6b7280; font-size:13px; }
+    /* 请假类型选择器 */
+    .picker { display:flex; align-items:center; justify-content:space-between; width:100%; box-sizing:border-box; border:2px solid var(--border-light,#e5e7eb); border-radius:8px; padding:12px 14px; font-size:14px; background:#fff; color:#111827; cursor:pointer; user-select:none; -webkit-tap-highlight-color:transparent; }
+    .picker:active { background:#fafafa; }
+    .picker .chev { width:8px; height:8px; border-right:2px solid #9ca3af; border-bottom:2px solid #9ca3af; transform:rotate(45deg); margin:-4px 2px 0 0; }
+    .sheet-mask { position:fixed; top:0; right:0; bottom:0; left:0; background:rgba(0,0,0,.35); display:flex; align-items:flex-end; z-index:999; opacity:0; pointer-events:none; transition:opacity .18s ease; }
+    .sheet-mask.open { opacity:1; pointer-events:auto; }
+    .sheet { width:100%; max-height:80vh; overflow-y:auto; background:#fff; border-radius:16px 16px 0 0; transform:translateY(100%); transition:transform .22s ease; padding-bottom:constant(safe-area-inset-bottom); padding-bottom:env(safe-area-inset-bottom,0px); }
+    .sheet-mask.open .sheet { transform:translateY(0); }
+    .sheet-item { padding:19px 16px; text-align:center; font-size:16px; color:#111827; border-bottom:1px solid #f0f0f0; cursor:pointer; }
+    .sheet-item:active { background:#f7f7f7; }
+    .sheet-item.active { color:#2563eb; font-weight:600; }
+    .sheet-tools { background:#f2f3f5; padding:8px 0; }
+    .sheet-cancel { padding:17px 16px; text-align:center; font-size:16px; color:#111827; background:#fff; border-radius:12px; cursor:pointer; }
   </style>
   <!-- 手机 / 微信内置浏览器适配补丁：置于页面自有样式之后，便于覆盖内联规则 -->
   <link rel="stylesheet" href="styles/wechat-mobile.css">
@@ -37,26 +50,93 @@
         <label for="endDate">请假结束日期</label>
         <input id="endDate" type="date">
       </div>
+      <div class="field">
+        <label for="leaveType">请假类型</label>
+        <div class="picker" id="leaveType" role="button" tabindex="0" aria-haspopup="listbox">
+          <span id="leaveTypeText">事假</span>
+          <i class="chev" aria-hidden="true"></i>
+        </div>
+      </div>
       <div class="actions">
         <button id="saveBtn" class="fbtn fbtn-primary" type="button">确认配置</button>
         <button id="resetBtn" class="fbtn fbtn-default" type="button">恢复默认</button>
         <button id="backBtn" class="fbtn fbtn-default" type="button">返回详情页</button>
       </div>
-      <div class="tips">确认后，详情页标题、请假开始日期、请假结束日期会优先使用这里的配置。</div>
+      <div class="tips">确认后，详情页标题、请假开始日期、请假结束日期、请假类型会优先使用这里的配置。</div>
     </div>
   </div>
+
+  <!-- 请假类型选择（底部弹层） -->
+  <div class="sheet-mask" id="sheetMask" aria-hidden="true">
+    <div class="sheet" role="listbox" aria-label="请假类型">
+      <div id="typeList"></div>
+      <div class="sheet-tools">
+        <div class="sheet-cancel" id="sheetCancel" role="button">取消</div>
+      </div>
+    </div>
+  </div>
+
   <script>
   (function () {
     const STORAGE_KEY = 'leave_detail_date_config';
+    const LEAVE_TYPES = ['病假', '事假', '公假', '中餐晚餐外出', '使用手机或电脑', '留校外出'];
+    const DEFAULT_TYPE = '事假';
     const nameInput = document.getElementById('name');
     const startInput = document.getElementById('startDate');
     const endInput = document.getElementById('endDate');
+    const typeField = document.getElementById('leaveType');
+    const typeText = document.getElementById('leaveTypeText');
+    const sheetMask = document.getElementById('sheetMask');
+    const typeList = document.getElementById('typeList');
+    let leaveType = DEFAULT_TYPE;
+
+    function setType(value) {
+      leaveType = LEAVE_TYPES.indexOf(value) >= 0 ? value : DEFAULT_TYPE;
+      typeText.textContent = leaveType;
+    }
+
+    function renderTypes() {
+      typeList.innerHTML = '';
+      LEAVE_TYPES.forEach(function (t) {
+        const row = document.createElement('div');
+        row.className = 'sheet-item' + (t === leaveType ? ' active' : '');
+        row.textContent = t;
+        row.setAttribute('role', 'option');
+        row.addEventListener('click', function () {
+          setType(t);
+          closeSheet();
+        });
+        typeList.appendChild(row);
+      });
+    }
+
+    function openSheet() {
+      renderTypes();
+      sheetMask.classList.add('open');
+      sheetMask.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeSheet() {
+      sheetMask.classList.remove('open');
+      sheetMask.setAttribute('aria-hidden', 'true');
+    }
+
+    typeField.addEventListener('click', openSheet);
+    typeField.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openSheet(); }
+    });
+    document.getElementById('sheetCancel').addEventListener('click', closeSheet);
+    sheetMask.addEventListener('click', function (e) {
+      if (e.target === sheetMask) closeSheet();
+    });
+
     function load() {
       try {
         const config = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
         if (config.name) nameInput.value = config.name;
         if (config.startDate) startInput.value = config.startDate;
         if (config.endDate) endInput.value = config.endDate;
+        setType(config.leaveType);
       } catch (e) {}
     }
     document.getElementById('saveBtn').addEventListener('click', function () {
@@ -64,7 +144,8 @@
         localStorage.setItem(STORAGE_KEY, JSON.stringify({
           name: nameInput.value || '',
           startDate: startInput.value || '',
-          endDate: endInput.value || ''
+          endDate: endInput.value || '',
+          leaveType: leaveType
         }));
       } catch (e) {}
       window.location.href = 'detail.html';
@@ -74,6 +155,7 @@
       nameInput.value = '';
       startInput.value = '';
       endInput.value = '';
+      setType(DEFAULT_TYPE);
     });
     document.getElementById('backBtn').addEventListener('click', function () {
       window.location.href = 'detail.html';

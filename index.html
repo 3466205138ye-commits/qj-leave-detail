@@ -57,12 +57,16 @@
           <i class="chev" aria-hidden="true"></i>
         </div>
       </div>
+      <div class="field">
+        <label for="reason">请假原因</label>
+        <input id="reason" type="text" placeholder="请输入请假原因" maxlength="50">
+      </div>
       <div class="actions">
         <button id="saveBtn" class="fbtn fbtn-primary" type="button">确认配置</button>
         <button id="resetBtn" class="fbtn fbtn-default" type="button">恢复默认</button>
         <button id="backBtn" class="fbtn fbtn-default" type="button">返回详情页</button>
       </div>
-      <div class="tips">确认后，详情页标题、请假开始日期、请假结束日期、请假类型会优先使用这里的配置。</div>
+      <div class="tips">确认后，详情页标题、请假开始日期、请假结束日期、请假类型、请假原因会优先使用这里的配置。</div>
     </div>
   </div>
 
@@ -84,6 +88,7 @@
     const nameInput = document.getElementById('name');
     const startInput = document.getElementById('startDate');
     const endInput = document.getElementById('endDate');
+    const reasonInput = document.getElementById('reason');
     const typeField = document.getElementById('leaveType');
     const typeText = document.getElementById('leaveTypeText');
     const sheetMask = document.getElementById('sheetMask');
@@ -136,6 +141,7 @@
         if (config.name) nameInput.value = config.name;
         if (config.startDate) startInput.value = config.startDate;
         if (config.endDate) endInput.value = config.endDate;
+        if (config.reason) reasonInput.value = config.reason;
         setType(config.leaveType);
       } catch (e) {}
     }
@@ -145,7 +151,8 @@
           name: nameInput.value || '',
           startDate: startInput.value || '',
           endDate: endInput.value || '',
-          leaveType: leaveType
+          leaveType: leaveType,
+          reason: reasonInput.value || ''
         }));
       } catch (e) {}
       window.location.href = 'detail.html';
@@ -155,6 +162,7 @@
       nameInput.value = '';
       startInput.value = '';
       endInput.value = '';
+      reasonInput.value = '';
       setType(DEFAULT_TYPE);
     });
     document.getElementById('backBtn').addEventListener('click', function () {

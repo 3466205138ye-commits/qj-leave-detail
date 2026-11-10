@@ -250,7 +250,7 @@
 
     function applyConfig() {
         const config = getConfig();
-        if (!config.startDate && !config.endDate && !config.leaveType) return;
+        if (!config.startDate && !config.endDate && !config.leaveType && !config.reason) return;
 
         const labels = Array.from(document.querySelectorAll('.info-label'));
         labels.forEach((labelEl) => {
@@ -266,6 +266,9 @@
             }
             if (label === '请假类型' && config.leaveType) {
                 valueEl.textContent = config.leaveType;
+            }
+            if (label === '请假原因' && config.reason) {
+                valueEl.textContent = config.reason;
             }
         });
     }

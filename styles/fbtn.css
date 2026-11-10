@@ -1,0 +1,251 @@
+:root {
+	/* 对齐 paginated_table.css 中的配色与半径体系 */
+	--fbtn-font-family: var(
+		--font-family,
+		-apple-system,
+		BlinkMacSystemFont,
+		"Segoe UI",
+		Roboto,
+		"Helvetica Neue",
+		Arial,
+		sans-serif
+	);
+	--fbtn-font-weight: 600;
+	--fbtn-radius: var(--radius-sm, 6px);
+	--fbtn-radius-pill: 999px;
+	--fbtn-radius-circle: 50%;
+	--fbtn-focus-ring: 0 0 0 3px var(--md-focus, rgba(25, 118, 210, 0.35));
+	--fbtn-gap: 0.5em;
+
+	--fbtn-h: 40px;
+	--fbtn-px: 16px;
+	--fbtn-fs: 14px;
+
+	--fbtn-primary: var(--primary, #2563eb);
+	--fbtn-primary-600: var(--primary-light, #3b82f6);
+	--fbtn-primary-700: var(--primary-light, #3b82f6);
+	--fbtn-secondary: var(--info, #6b7280);
+	--fbtn-secondary-600: var(--info, #6b7280);
+	--fbtn-success: var(--success, #10b981);
+	--fbtn-success-600: #059669;
+	--fbtn-warning: var(--warning, #f59e0b);
+	--fbtn-warning-600: #d98206;
+	--fbtn-danger: var(--danger, #ef4444);
+	--fbtn-danger-600: #dc2626;
+	--fbtn-info: var(--info, #6b7280);
+	--fbtn-info-600: #4b5563;
+	--fbtn-light: var(--bg-secondary, #f3f4f6);
+	--fbtn-dark: #111827;
+	--fbtn-white: #fff;
+	--fbtn-text: #374151; /* 与 fbtn 文本色一致 */
+	--fbtn-border: var(--border-light, #e5e7eb);
+}
+
+.fbtn {
+	-webkit-appearance: none;
+	appearance: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: var(--fbtn-gap);
+	height: var(--fbtn-h);
+	padding: 0 var(--fbtn-px);
+	font: var(--fbtn-font-weight) var(--fbtn-fs) / 1 var(--fbtn-font-family);
+	color: var(--fbtn-text);
+	background: var(--bg-primary, #ffffff);
+	/* 显式边框：与 toolbar 扁平风格一致且始终可见 */
+	border-width: 2px;
+	border-style: solid;
+	border-color: var(--fbtn-border, #e5e7eb);
+	border-radius: var(--fbtn-radius);
+	cursor: pointer;
+	user-select: none;
+	vertical-align: middle;
+	transition: all 0.15s ease;
+	text-decoration: none;
+	white-space: nowrap;
+	min-width: 64px; /* 与 action 按钮一致的最小宽度 */
+	box-sizing: border-box; /* 避免边框导致布局抖动 */
+}
+.fbtn:hover {
+	background: var(--bg-secondary, #f9fafb);
+	border-color: var(--border-medium, #d1d5db);
+	box-shadow: none; /* 与 toolbar 扁平化一致 */
+}
+.fbtn:active {
+	transform: translateY(1px);
+}
+.fbtn:focus-visible {
+	outline: none;
+	box-shadow: var(--fbtn-focus-ring);
+}
+.fbtn[disabled],
+.fbtn[aria-disabled="true"] {
+	opacity: 1;
+	color: #9ca3af;
+	cursor: not-allowed;
+	box-shadow: none;
+	background: var(--bg-tertiary, #f3f4f6);
+	border-color: var(--border-light, #e5e7eb);
+}
+
+/* 实心主题按钮，贴合 toolbar 风格 */
+.fbtn-primary {
+	background: var(--fbtn-primary);
+	color: var(--fbtn-white);
+	border-color: var(--fbtn-primary);
+	/* 避免主题按钮把边框去掉的全局覆盖 */
+	border-style: solid;
+	border-width: 2px;
+}
+.fbtn-primary:hover {
+	background: var(--fbtn-primary-600);
+	border-color: var(--fbtn-primary-600);
+}
+.fbtn-secondary {
+	background: var(--fbtn-secondary);
+	color: var(--fbtn-white);
+	border-color: var(--fbtn-secondary);
+}
+.fbtn-secondary:hover {
+	background: var(--fbtn-secondary-600);
+	border-color: var(--fbtn-secondary-600);
+}
+.fbtn-success {
+	background: var(--fbtn-success);
+	color: var(--fbtn-white);
+	border-color: var(--fbtn-success);
+}
+.fbtn-success:hover {
+	background: var(--fbtn-success-600);
+	border-color: var(--fbtn-success-600);
+}
+.fbtn-warning {
+	background: var(--fbtn-warning);
+	color: #111827;
+	border-color: var(--fbtn-warning);
+}
+.fbtn-warning:hover {
+	background: var(--fbtn-warning-600);
+	color: #111827;
+	border-color: var(--fbtn-warning-600);
+}
+.fbtn-danger {
+	background: var(--fbtn-danger);
+	color: var(--fbtn-white);
+	border-color: var(--fbtn-danger);
+}
+.fbtn-danger:hover {
+	background: var(--fbtn-danger-600);
+	border-color: var(--fbtn-danger-600);
+}
+.fbtn-info {
+	background: var(--fbtn-info);
+	color: var(--fbtn-white);
+	border-color: var(--fbtn-info);
+}
+.fbtn-info:hover {
+	background: var(--fbtn-info-600);
+	border-color: var(--fbtn-info-600);
+}
+.fbtn-light {
+	background: var(--fbtn-light);
+	color: #374151;
+	border-color: var(--fbtn-border);
+	border-width: 2px;
+	border-style: solid;
+}
+.fbtn-outline {
+	background: transparent;
+	color: var(--fbtn-primary);
+	border-color: var(--fbtn-primary);
+	border-width: 2px;
+	border-style: solid;
+}
+.fbtn-outline:hover {
+	background: rgba(37, 99, 235, 0.08);
+	border-color: var(--fbtn-primary-600);
+	color: var(--fbtn-primary-600);
+}
+.fbtn-dark {
+	background: var(--fbtn-dark);
+	color: var(--fbtn-white);
+	border-color: var(--fbtn-dark);
+	border-width: 2px;
+	border-style: solid;
+}
+
+/* 幽灵按钮：默认无视觉边框（透明边框以保持布局），悬停出现浅底色 */
+.fbtn-ghost {
+	background: transparent;
+	/* 保留2px边框宽度但颜色透明，避免尺寸跳变 */
+	border-width: 2px;
+	border-style: solid;
+	color: var(--fbtn-text);
+	border-color: var(--border-light, #e5e7eb);
+}
+.fbtn-ghost:hover {
+	background: var(--bg-secondary, #f9fafb);
+}
+
+.fbtn[aria-busy="true"] {
+	position: relative;
+	pointer-events: none;
+}
+.fbtn__spinner {
+	display: inline-block;
+	font-size: 1.1em;
+	line-height: 0;
+	animation: fbtn-spin 1s linear infinite;
+}
+@keyframes fbtn-spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+.fbtn__icon--left {
+	margin-right: 0.35em;
+}
+.fbtn__icon--right {
+	margin-left: 0.35em;
+}
+
+.fbtn-group {
+	display: inline-flex;
+	vertical-align: middle;
+}
+.fbtn-group .fbtn {
+	border-radius: 0;
+}
+.fbtn-group .fbtn:first-child {
+	border-top-left-radius: var(--fbtn-radius);
+	border-bottom-left-radius: var(--fbtn-radius);
+}
+.fbtn-group .fbtn:last-child {
+	border-top-right-radius: var(--fbtn-radius);
+	border-bottom-right-radius: var(--fbtn-radius);
+}
+/* 组内相邻按钮边界对齐到 2px 边框（若外层存在全局 button 样式覆盖，确保分隔线不消失） */
+.fbtn-group .fbtn + .fbtn {
+	margin-left: -2px;
+	border-left-width: 2px;
+}
+
+@media (forced-colors: active) {
+	.fbtn {
+		border: 2px solid currentColor;
+	}
+}
+
+@media (max-width: 480px) {
+	.fbtn {
+		--fbtn-h: 36px;
+		--fbtn-px: 12px;
+		--fbtn-fs: 13px;
+	}
+}
+
+a.fbtn {
+	text-decoration: none;
+}

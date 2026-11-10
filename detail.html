@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>请假详情 - 郑思航</title>
+<script src="components/image_preview.js"></script>
+<script defer="" src="assets/js/alpinev3.js"></script>
+<link href="img/school-logo.webp" rel="icon" type="image/png"/>
+<link href="assets/icon/remixicon.css" rel="stylesheet"/>
+<link href="user/student/styles/leave_detail.css" rel="stylesheet"/>
+<link href="components/image_preview.css" rel="stylesheet"/>
+<link href="styles/fbtn.css" rel="stylesheet"/>
+<link href="styles/wechat-mobile.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="top-bar top-bar-main">
+<div class="logo logo-container"><img class="logo-img" src="img/xxjs.webp"/></div>
+<div class="top-bar-buttons top-bar-buttons-container">
+<button class="fbtn fbtn-primary back-btn">返回列表</button>
+</div>
+</div>
+<style>
+    .top-bar-main {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 16px;
+        height: 64px;
+        background-color: #ffffffff;
+        border-bottom: 1px solid #ccc;
+        margin-bottom: 10px;
+    }
+
+    .logo-container {
+        flex-shrink: 0;
+    }
+
+    .logo-img {
+        max-height: 48px;
+        width: auto;
+        object-fit: contain;
+    }
+
+    .top-bar-buttons-container {
+        display: flex;
+        gap: 10px;
+    }
+
+    @media (max-width: 768px) {
+        .top-bar-main {
+            padding: 0 12px;
+        }
+
+        .logo-img {
+            max-height: 40px;
+        }
+    }
+
+    /* View Transitions API 样式 */
+    @view-transition {
+        navigation: auto;
+    }
+
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+        animation-duration: 150ms;
+        animation-timing-function: ease-out;
+    }
+
+    ::view-transition-old(root) {
+        animation-name: view-fade-out;
+    }
+
+    ::view-transition-new(root) {
+        animation-name: view-fade-in;
+    }
+
+    @keyframes view-fade-out {
+        from {
+            opacity: 1;
+        }
+
+        to {
+            opacity: 0;
+        }
+    }
+
+    @keyframes view-fade-in {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    .top-bar {
+        view-transition-name: top-bar;
+    }
+
+    ::view-transition-old(top-bar),
+    ::view-transition-new(top-bar) {
+        animation-duration: 0.2s;
+        animation-timing-function: steps(2, end);
+    }
+</style>
+<script>
+    (function () {
+        "use strict";
+        if (!document.querySelector('meta[name="view-transition"]')) {
+            const meta = document.createElement("meta");
+            meta.name = "view-transition";
+            meta.content = "same-origin";
+            document.head.prepend(meta);
+        }
+    })();
+</script>
+<div class="detail-container">
+<h1><i class="ri-file-text-line"></i>请假详情</h1>
+<!-- 基本信息 -->
+<div class="basic-info">
+<h3><i class="ri-information-line" style="cursor:pointer;" onclick="window.location.href='index.html'" title="进入配置"></i>基本信息</h3>
+<div class="info-grid">
+<div class="info-label">请假开始日期</div>
+<div class="info-value">2026-06-11</div>
+<div class="info-label">请假结束日期</div>
+<div class="info-value">2026-06-11</div>
+<div class="info-label">请假天数</div>
+<div class="info-value">当天</div>
+<div class="info-label">请假类型</div>
+<div class="info-value">事假</div>
+<div class="info-label">请假总节数</div>
+<div class="info-value">9节</div>
+<div class="info-label">开始节次</div>
+<div class="info-value">跑操</div>
+<div class="info-label">结束节次</div>
+<div class="info-value">晚自习</div>
+<div class="info-label">是否住校</div>
+<div class="info-value">是</div>
+<div class="info-label">请假原因</div>
+<div class="info-value">出校</div>
+</div>
+</div>
+<!-- 审批流程 -->
+<div class="timeline-container">
+<h3><i class="ri-git-branch-line"></i>审批流程</h3>
+<!-- Alpine.js 组件容器 -->
+<div x-data="leaveDetail()" x-init="init()">
+<!-- 状态卡片 -->
+<div :class="statusCard.type" class="approval-status-card">
+<div class="status-title">
+<i :class="statusCard.icon"></i>
+<span x-text="statusCard.title"></span>
+</div>
+<template x-if="statusCard.showProgress">
+<div class="status-progress" x-text="statusCard.progress"></div>
+</template>
+<div class="status-detail" x-text="statusCard.detail"></div>
+</div>
+<!-- 时间轴 -->
+<div class="timeline">
+<!-- 需要审批的步骤 -->
+<template :key="item.id" x-for="item in timelineItems">
+<div :class="[item.status, item.isCurrent ? 'current' : '']" class="timeline-item">
+<div class="timeline-role" x-text="item.role"></div>
+<div :class="item.status" class="timeline-status" x-html="item.statusText"></div>
+<div class="timeline-description" x-text="item.description"></div>
+<!-- 任一审批组详情 -->
+<template x-if="item.isGroup">
+<div class="timeline-group-detail">
+<template :key="sub.role" x-for="sub in item.groupItems">
+<div :class="sub.status" class="timeline-group-item">
+<div class="timeline-group-role" x-text="sub.role"></div>
+<div :class="sub.status" class="timeline-group-status" x-html="sub.statusText"></div>
+</div>
+</template>
+</div>
+</template>
+</div>
+</template>
+<!-- 折叠区域：无需审批的角色 -->
+<template x-if="optionalItems.length &gt; 0">
+<div>
+<div @click="showOptional = !showOptional" class="timeline-fold-toggle">
+<i :class="showOptional ? 'ri-arrow-up-s-line' : 'ri-arrow-down-s-line'"></i>
+<span x-text="(showOptional ? '隐藏' : '显示') + '无需审批的角色 (' + optionalItems.length + ')'"></span>
+</div>
+<div class="timeline-optional-section" x-cloak="" x-show="showOptional" x-transition="">
+<template :key="item.id" x-for="item in optionalItems">
+<div :class="item.status" class="timeline-item">
+<div class="timeline-role" x-text="item.role"></div>
+<div :class="item.status" class="timeline-status" x-html="item.statusText"></div>
+<div class="timeline-description" x-text="item.description"></div>
+</div>
+</template>
+</div>
+</div>
+</template>
+</div>
+</div>
+</div>
+<!-- 证明图片 -->
+<div class="images-container">
+<h3><i class="ri-image-line"></i>证明图片</h3>
+<div class="images-grid">
+<div class="no-images">
+<i class="ri-image-line"></i>
+<span>暂无证明图片</span>
+</div>
+</div>
+</div>
+</div>
+<!-- 将 PHP 数据注入到 JavaScript -->
+<script>
+        window.leaveDetailData = {"statusCard":{"type":"approved","icon":"ri-checkbox-circle-line","title":"已通过","showProgress":false,"progress":"","detail":"请假申请已通过"},"timelineItems":[{"id":"step-0","role":"家长审批","status":"approved","isCurrent":false,"statusIcon":"ri-check-line","statusText":"\u003Ci class=\u0022ri-check-line\u0022\u003E\u003C\/i\u003E 已批准","description":"需家长确认","isGroup":false,"groupItems":[]},{"id":"group-any_one","role":"任一审批","status":"approved","isCurrent":true,"statusIcon":"ri-checkbox-circle-line","statusText":"\u003Ci class=\u0022ri-checkbox-circle-line\u0022\u003E\u003C\/i\u003E 已批准","description":"任一批准即可","isGroup":true,"groupItems":[{"role":"班主任审批","status":"approved","isCurrent":false,"statusIcon":"ri-check-line","statusText":"\u003Ci class=\u0022ri-check-line\u0022\u003E\u003C\/i\u003E 已批准"},{"role":"学生科审批","status":"pending","isCurrent":true,"statusIcon":"ri-time-line","statusText":"\u003Ci class=\u0022ri-time-line\u0022\u003E\u003C\/i\u003E 待审批"},{"role":"领导审批","status":"pending","isCurrent":false,"statusIcon":"ri-time-line","statusText":"\u003Ci class=\u0022ri-time-line\u0022\u003E\u003C\/i\u003E 待审批"}]}],"optionalItems":[{"id":"optional-4","role":"校医审批","status":"no-need","isCurrent":false,"statusIcon":"ri-pause-circle-line","statusText":"\u003Ci class=\u0022ri-pause-circle-line\u0022\u003E\u003C\/i\u003E 无需审批","description":"需校医审核","isGroup":false,"groupItems":[]}]};
+
+        function leaveDetail() {
+            return {
+                statusCard: {},
+                timelineItems: [],
+                optionalItems: [],
+                showOptional: false,
+
+                init() {
+                    this.statusCard = window.leaveDetailData.statusCard;
+                    this.timelineItems = window.leaveDetailData.timelineItems;
+                    this.optionalItems = window.leaveDetailData.optionalItems;
+                }
+            };
+        }
+    </script>
+
+<script>
+(function () {
+    const STORAGE_KEY = 'leave_detail_date_config';
+
+    function getConfig() {
+        try {
+            return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+        } catch (e) {
+            return {};
+        }
+    }
+
+    function applyConfig() {
+        const config = getConfig();
+        if (!config.startDate && !config.endDate) return;
+
+        const labels = Array.from(document.querySelectorAll('.info-label'));
+        labels.forEach((labelEl) => {
+            const label = (labelEl.textContent || '').trim();
+            const valueEl = labelEl.nextElementSibling;
+            if (!valueEl || !valueEl.classList.contains('info-value')) return;
+
+            if (label === '请假开始日期' && config.startDate) {
+                valueEl.textContent = config.startDate;
+            }
+            if (label === '请假结束日期' && config.endDate) {
+                valueEl.textContent = config.endDate;
+            }
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', applyConfig);
+    } else {
+        applyConfig();
+    }
+})();
+</script>
+
+<script>
+(function () {
+  const STORAGE_KEY = 'leave_detail_date_config';
+  function getConfig() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch (e) { return {}; }
+  }
+  function applyConfig() {
+    const config = getConfig();
+    const labels = Array.from(document.querySelectorAll('.info-label'));
+    labels.forEach((labelEl) => {
+      const label = (labelEl.textContent || '').trim();
+      const valueEl = labelEl.nextElementSibling;
+      if (!valueEl || !valueEl.classList.contains('info-value')) return;
+      if (label === '请假开始日期' && config.startDate) valueEl.textContent = config.startDate;
+      if (label === '请假结束日期' && config.endDate) valueEl.textContent = config.endDate;
+    });
+    const name = (config.name || '').trim() || '郑思航';
+    document.title = '请假详情 - ' + name;
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', applyConfig); else applyConfig();
+})();
+</script>
+</body>
+</html>
